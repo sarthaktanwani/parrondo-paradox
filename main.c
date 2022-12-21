@@ -13,7 +13,7 @@ void printStats(int, int, int, int);
 int main()
 {
     int iter = 0;
-    int bal = 0;
+    int balGameA = 0,balGameB = 0, balGameC = 0;
     int winsA = 0, winsB = 0, winsC = 0;
     int lossesA = 0, lossesB = 0, lossesC = 0;
     char prompt = 'y';
@@ -36,31 +36,37 @@ int main()
             int res = gameA();
             if(res == 0)
             {
+                balGameA--;
                 lossesA++;
             }
             else
             {
+                balGameA++;
                 winsA++;
             }
 
-            res = gameB(bal);
+            res = gameB(balGameB);
             if(res == 0)
             {
+                balGameB--;
                 lossesB++;
             }
             else
             {
+                balGameB++;
                 winsB++;
             }
 
 
-            res = gameC(bal);
+            res = gameC(balGameC);
             if(res == 0)
             {
+                balGameC--;
                 lossesC++;
             }
             else
             {
+                balGameC++;
                 winsC++;
             }
         }
@@ -68,6 +74,7 @@ int main()
         printStats(iter, winsA, winsB, winsC);
 
         printf("iterations complete\n");
+
         printf("Enter the prompt: ");
 
         tcsetattr(STDIN_FILENO, TCSANOW, &new_setting);
@@ -96,16 +103,20 @@ void printStats(int iter, int winsA, int winsB, int winsC)
     int lossA = iter - winsA;
     int lossB = iter - winsB;
     int lossC = iter - winsC;
+    int balA = winsA - lossA, balB = winsB - lossB, balC = winsC - lossC;
     
     printf("******Game A Stats******\n");
+    printf("Final Balance: %d\n", balA);
     printf("Wins: %d/%d\tLosses: %d/%d\t\n", winsA, iter, lossA, iter);
     printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)winsA/iter*100, (float)lossA/iter*100);
 
     printf("******Game B Stats******\n");
+    printf("Final Balance: %d\n", balB);
     printf("Wins: %d/%d\tLosses: %d/%d\t\n", winsB, iter, lossB, iter);
     printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)winsB/iter*100, (float)lossB/iter*100);
 
     printf("******Game C Stats******\n");
+    printf("Final Balance: %d\n", balC);
     printf("Wins: %d/%d\tLosses: %d/%d\t\n", winsC, iter, lossC, iter);
     printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)winsC/iter*100, (float)lossC/iter*100);
 }
@@ -117,10 +128,12 @@ int gameA(void)
 
     if(random_number < 0.495)
     {
+        //Win with a chance of 49.5%
         return 1;
     }
     else
     {
+        //Lose with a chance of 50.5%
         return 0;
     }
 }
@@ -129,10 +142,11 @@ int gameB(int balance)
 {
     float random_number = (float)rand() / (float) RAND_MAX;
 
-    if(balance % 3 == 0)
+    if(balance % 3 != 0)
     {
         if(random_number < 0.01)
         {
+            //win with a 1% chance
             return 1;
         }
         else
