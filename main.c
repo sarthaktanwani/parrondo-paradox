@@ -149,7 +149,7 @@ int gameB(int balance)
 {
     float random_number = (float)rand() / (float) RAND_MAX;
 
-    if(balance % 3 != 0)
+    if(balance % 3 == 0)
     {
         if(random_number < 0.01)
         {
@@ -158,6 +158,7 @@ int gameB(int balance)
         }
         else
         {
+            //lose with a 99.9% chance
             return 0;
         }
     }
@@ -165,10 +166,12 @@ int gameB(int balance)
     {
         if(random_number < 0.75)
         {
+            //Win with a 75% chance
             return 1;
         }
         else
         {
+            //lose with a 25% chance
             return 0;
         }
     }
