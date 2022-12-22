@@ -17,6 +17,7 @@ int main()
     int winsA = 0, winsB = 0, winsC = 0;
     int lossesA = 0, lossesB = 0, lossesC = 0;
     char prompt = 'y';
+    (void)prompt;
 
     struct termios old_setting, new_setting;
 
@@ -26,11 +27,18 @@ int main()
     new_setting.c_lflag &= (~ICANON);
 
     srand(time(NULL));
-    while(1)
+
+
+    while(balGameC <= 0)
     {
-        printf("Enter the number of iterations: ");
-        scanf(" %d", &iter);
-        printf("iterations are: %d\n", iter);
+        // float random_number = (float)rand() / (float) RAND_MAX;
+        // printf("random number 1 is: %f\n", random_number);
+        // random_number = (float)rand() / (float) RAND_MAX;
+        // printf("random number 2 is: %f\n", random_number);
+        // printf("Enter the number of iterations: ");
+        // scanf(" %d", &iter);
+        // printf("iterations are: %d\n", iter);
+        iter = 1000;
         for(int i = 0; i < iter; i++)
         {
             int res = gameA();
@@ -75,22 +83,21 @@ int main()
 
         printf("iterations complete\n");
 
-        printf("Enter the prompt: ");
+        // printf("Enter the prompt: ");
 
-        tcsetattr(STDIN_FILENO, TCSANOW, &new_setting);
+        // tcsetattr(STDIN_FILENO, TCSANOW, &new_setting);
 
-        scanf(" %c", &prompt);
+        // scanf(" %c", &prompt);
         
-        tcsetattr(STDIN_FILENO, TCSANOW, &old_setting);
+        // tcsetattr(STDIN_FILENO, TCSANOW, &old_setting);
         
-        printf("\n");
-        printf("prompt is: %c\n", prompt);
+        // printf("\n");
+        // printf("prompt is: %c\n", prompt);
         
-        // printf("prompt is: %d\n", prompt);
-        if(prompt != 'y' && prompt != 'Y')
-        {
-            break;
-        }
+        // if(prompt != 'y' && prompt != 'Y')
+        // {
+        //     break;
+        // }
         winsA = winsB = winsC = lossesA = lossesB = lossesC = 0;
     }
 
@@ -171,6 +178,17 @@ int gameB(int balance)
 int gameC(int balance)
 {
     float random_number = (float)rand() / (float) RAND_MAX;
+    (void)random_number;
+    // if(balance % 3 == 0)
+    // {
+    //     return gameB(balance);
+    // }
+    // else
+    // {
+    //     return gameA();
+    // }
+    
+    
     if(random_number > 0.5)
     {
         return gameA();
