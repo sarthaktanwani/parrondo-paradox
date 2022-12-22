@@ -38,6 +38,7 @@ int main()
         // printf("Enter the number of iterations: ");
         // scanf(" %d", &iter);
         // printf("iterations are: %d\n", iter);
+        balGameA = balGameB = balGameC = 0;
         iter = 1000;
         for(int i = 0; i < iter; i++)
         {
