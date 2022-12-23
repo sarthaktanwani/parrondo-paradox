@@ -15,9 +15,6 @@ int gameA(Stats *s);
 int gameB(Stats *s);
 int gameC(Stats *s);
 
-// void printStats(int, int, int, int);
-
-
 void printStats(int iter, Stats *);
 void resetStats(Stats *);
 
@@ -27,9 +24,6 @@ int main()
     Stats s1;
     resetStats(&s1);
     
-    int balGameA = 0,balGameB = 0, balGameC = 0;
-    int winsA = 0, winsB = 0, winsC = 0;
-    int lossesA = 0, lossesB = 0, lossesC = 0;
     char prompt = 'y';
     (void)prompt;
 
@@ -44,93 +38,34 @@ int main()
 
 
     while(s1.gameBal[2] <= 0)
-    // while(balGameC <= 0) 
     {
-        // float random_number = (float)rand() / (float) RAND_MAX;
-        // printf("random number 1 is: %f\n", random_number);
-        // random_number = (float)rand() / (float) RAND_MAX;
-        // printf("random number 2 is: %f\n", random_number);
         // printf("Enter the number of iterations: ");
         // scanf(" %d", &iter);
         // printf("iterations are: %d\n", iter);
         resetStats(&s1);
-        winsA = winsB = winsC = lossesA = lossesB = lossesC = 0;
-        balGameA = balGameB = balGameC = 0;
         iter = 1000;
         for(int i = 0; i < iter; i++)
         {
             int res = gameA(&s1);
-            if(res == 0)
-            {
-                balGameA--;
-                lossesA++;
-                // s1.gameBal[0]--;
-                // s1.losses[0]++;
-            }
-            else
-            {
-                balGameA++;
-                winsA++;
-                // s1.gameBal[0]++;
-                // s1.wins[0]++;
-            }
-
             res = gameB(&s1);
-            if(res == 0)
-            {
-                balGameB--;
-                lossesB++;
-                // s1.gameBal[1]--;
-                // s1.losses[1]++;
-            }
-            else
-            {
-                balGameB++;
-                winsB++;
-                // s1.gameBal[1]++;
-                // s1.wins[1]++;
-            }
             res = gameC(&s1);
-            if(res == 0)
-            {
-                balGameC--;
-                lossesC++;
-                // s1.gameBal[2]--;
-                // s1.losses[2]++;
-            }
-            else
-            {
-                balGameC++;
-                winsC++;
-                // s1.gameBal[2]++;
-                // s1.wins[2]++;
-            }
+            (void)res;
         }
 
         printStats(iter, &s1);
 
         printf("iterations complete\n");
-        // printf("gameBalC = %d, finalgameBal: %d\n", balGameC, s1.gameBal[2]);
-        // printf("iterations complete\n");
 
         // printf("Enter the prompt: ");
-
         // tcsetattr(STDIN_FILENO, TCSANOW, &new_setting);
-
         // scanf(" %c", &prompt);
-        
         // tcsetattr(STDIN_FILENO, TCSANOW, &old_setting);
-        
-        // printf("\n");
-        // printf("prompt is: %c\n", prompt);
-        
+        // printf("\n");        
         // if(prompt != 'y' && prompt != 'Y')
         // {
         //     break;
         // }
-        // resetStats(&s1);  
     }
-
     printf("Hello World\n");
     return 0;
 }
@@ -229,16 +164,7 @@ int gameC(Stats *s)
 {
     float random_number = (float)rand() / (float) RAND_MAX;
     (void)random_number;
-    // if(balance % 3 == 0)
-    // {
-    //     return gameB(balance);
-    // }
-    // else
-    // {
-    //     return gameA();
-    // }
-    
-    
+        
     if(random_number > 0.5)
     {
         random_number = (float)rand() / (float) RAND_MAX;
@@ -256,7 +182,7 @@ int gameC(Stats *s)
             s->losses[2]++;
             s->gameBal[2]--;
             return 0;
-        } 
+        }
     }
     else if(random_number < 0.5)
     {
