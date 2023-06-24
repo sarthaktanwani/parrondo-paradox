@@ -2,14 +2,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>       //for srand(time(NULL))
-#include <termios.h>    //to immediately respond to keystrokes on the terminal
+//#include <termios.h>    //to immediately respond to keystrokes on the terminal
 
 #define NUMBER_OF_GAMES 3
 
 typedef struct
 {
-    int wins[NUMBER_OF_GAMES], losses[NUMBER_OF_GAMES], gameBal[NUMBER_OF_GAMES];
-}Stats;
+    int wins[NUMBER_OF_GAMES], losses[NUMBER_OF_GAMES];
+    int gameBal[NUMBER_OF_GAMES];
+    float avg_wins[NUMBER_OF_GAMES], avg_losses[NUMBER_OF_GAMES];
+    float avg_gameBal[NUMBER_OF_GAMES];
+}Stats; 
 
 int gameA(Stats *s);
 int gameB(Stats *s);
@@ -23,47 +26,56 @@ int main()
     int iter = 0, runs = 0;
     Stats s1;
     resetStats(&s1);
-    
-    char prompt = 'y';
-    (void)prompt;
-
-    struct termios old_setting, new_setting;
-
-    tcgetattr(STDIN_FILENO, &old_setting);
-    new_setting = old_setting;
-
-    new_setting.c_lflag &= (~ICANON);
-
     srand(time(NULL));
 
-
-    while(s1.gameBal[2] <= 0)
+    for(int i = 0; i < NUMBER_OF_GAMES; i++)
     {
-        // printf("Enter the number of iterations: ");
-        // scanf(" %d", &iter);
-        // printf("iterations are: %d\n", iter);
+        s1.avg_wins[i] = 0;
+        s1.avg_losses[i] = 0;
+        s1.avg_gameBal[i] = 0;
+    }
+
+    printf("Enter the number of repetitions: ");
+    scanf(" %d", &runs);
+    printf("Runs are: %d\n", runs);
+
+    printf("Enter the number of iterations: ");
+    scanf(" %d", &iter);
+    printf("iterations are: %d\n", iter);
+
+    // while(runs--)
+    for(int i = 0; i < runs; i++)
+    {
         resetStats(&s1);
-        iter = 1000;
-        for(int i = 0; i < iter; i++)
+        // iter = 1000;
+        for(int j = 0; j < iter; j++)
         {
             gameA(&s1);
             gameB(&s1);
             gameC(&s1);
         }
-        runs++;
-        printStats(iter, &s1);
+        s1.avg_wins[0] += s1.wins[0];
+        s1.avg_wins[1] += s1.wins[1];
+        s1.avg_wins[2] += s1.wins[2];
 
+        s1.avg_losses[0] += s1.losses[0];
+        s1.avg_losses[1] += s1.losses[1];
+        s1.avg_losses[2] += s1.losses[2];
 
-        // printf("Enter the prompt: ");
-        // tcsetattr(STDIN_FILENO, TCSANOW, &new_setting);
-        // scanf(" %c", &prompt);
-        // tcsetattr(STDIN_FILENO, TCSANOW, &old_setting);
-        // printf("\n");        
-        // if(prompt != 'y' && prompt != 'Y')
-        // {
-        //     break;
-        // }
+        s1.avg_gameBal[0] += s1.gameBal[0];
+        s1.avg_gameBal[1] += s1.gameBal[1];
+        s1.avg_gameBal[2] += s1.gameBal[2];
+        // runs++;
+
+        // printf("%f,", (float)(s1.avg_losses[2] / runs));
     }
+    for(int i = 0; i < NUMBER_OF_GAMES; i++)
+    {
+        s1.avg_wins[i] = (float)s1.avg_wins[i] / runs;
+        s1.avg_losses[i] = (float)s1.avg_losses[i] / runs;
+        s1.avg_gameBal[i] = (float)s1.avg_gameBal[i] / runs;
+    }
+    printStats(iter, &s1);
     printf("%d iterations complete\n", runs);
     printf("Hello World\n");
     return 0;
@@ -76,55 +88,107 @@ void resetStats(Stats *s)
         s->wins[i] = 0;
         s->losses[i] = 0;
         s->gameBal[i] = 0;
+        // s->avg_wins[i] = 0;
+        // s->avg_losses[i] = 0;
+        // s->avg_gameBal[i] = 0;
     }
 }
 
+// void printStats(int iter, Stats *s)
+// {
+//     printf("******Game A Stats******\n");
+//     printf("Final Balance: $%d\n", s->gameBal[0]);
+//     if(s->gameBal[0] < 0)
+//     {
+//         //On average, lost x amount per turn
+//         printf("On average, lost $%f amount per turn\n", (-1)*(float)s->gameBal[0]/iter);
+//     }
+//     else if(s->gameBal[0] >= 0)
+//     {
+//         //On average, won x amount per turn
+//         printf("On average, won $%f amount per turn\n", (float)s->gameBal[0]/iter);
+//     }
+//     printf("Wins: %d/%d\tLosses: %d/%d\t\n", s->wins[0], iter, s->losses[0], iter);
+//     printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)s->wins[0]/iter*100, (float)s->losses[0]/iter*100);
+
+//     printf("******Game B Stats******\n");
+//     if(s->gameBal[1] < 0)
+//     {
+//         //On average, lost x amount per turn
+//         printf("On average, lost $%f amount per turn\n", (-1)*(float)s->gameBal[1]/iter);
+//     }
+//     else if(s->gameBal[1] >= 0)
+//     {
+//         //On average, won x amount per turn
+//         printf("On average, won $%f amount per turn\n", (float)s->gameBal[1]/iter);
+//     }
+//     printf("Final Balance: $%d\n", s->gameBal[1]);
+//     printf("Wins: %d/%d\tLosses: %d/%d\t\n", s->wins[1], iter, s->losses[1], iter);
+//     printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)s->wins[1]/iter*100, (float)s->losses[1]/iter*100);
+
+//     printf("******Game C Stats******\n");
+//     printf("Final Balance: $%d\n", s->gameBal[2]);
+//     if(s->gameBal[2] < 0)
+//     {
+//         //On average, lost x amount per turn
+//         printf("On average, lost $%f amount per turn\n", (-1)*(float)s->gameBal[2]/iter);
+//     }
+//     else if(s->gameBal[2] >= 0)
+//     {
+//         //On average, won x amount per turn
+//         printf("On average, won $%f amount per turn\n", (float)s->gameBal[2]/iter);
+//     }
+//     printf("Wins: %d/%d\tLosses: %d/%d\t\n", s->wins[2], iter, s->losses[2], iter);
+//     printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)s->wins[2]/iter*100, (float)s->losses[2]/iter*100);
+// }
+
+
 void printStats(int iter, Stats *s)
-{    
+{
     printf("******Game A Stats******\n");
-    printf("Final Balance: $%d\n", s->gameBal[0]);
-    if(s->gameBal[0] < 0)
+    printf("Final Balance: $%f\n", s->avg_gameBal[0]);
+    if(s->avg_gameBal[0] < 0)
     {
         //On average, lost x amount per turn
-        printf("On average, lost $%f amount per turn\n", (-1)*(float)s->gameBal[0]/iter);
+        printf("On average, lost $%f amount per turn\n", (-1)*(float)s->avg_gameBal[0]/iter);
     }
-    else if(s->gameBal[0] >= 0)
+    else if(s->avg_gameBal[0] >= 0)
     {
         //On average, won x amount per turn
-        printf("On average, won $%f amount per turn\n", (float)s->gameBal[0]/iter);
-    }
-    printf("Wins: %d/%d\tLosses: %d/%d\t\n", s->wins[0], iter, s->losses[0], iter);
-    printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)s->wins[0]/iter*100, (float)s->losses[0]/iter*100);
+        printf("On average, won $%f amount per turn\n", (float)s->avg_gameBal[0]/iter);
+            }
+    printf("Wins: %f/%d\tLosses: %f/%d\t\n", s->avg_wins[0], iter, s->avg_losses[0], iter);
+    printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)s->avg_wins[0]/iter*100, (float)s->avg_losses[0]/iter*100);
 
     printf("******Game B Stats******\n");
-    if(s->gameBal[1] < 0)
+    if(s->avg_gameBal[1] < 0)
     {
         //On average, lost x amount per turn
-        printf("On average, lost $%f amount per turn\n", (-1)*(float)s->gameBal[1]/iter);
+        printf("On average, lost $%f amount per turn\n", (-1)*(float)s->avg_gameBal[1]/iter);
     }
-    else if(s->gameBal[1] >= 0)
+    else if(s->avg_gameBal[1] >= 0)
     {
         //On average, won x amount per turn
-        printf("On average, won $%f amount per turn\n", (float)s->gameBal[1]/iter);
+        printf("On average, won $%f amount per turn\n", (float)s->avg_gameBal[1]/iter);
     }
-    printf("Final Balance: $%d\n", s->gameBal[1]);
-    printf("Wins: %d/%d\tLosses: %d/%d\t\n", s->wins[1], iter, s->losses[1], iter);
-    printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)s->wins[1]/iter*100, (float)s->losses[1]/iter*100);
+    printf("Final Balance: $%f\n", s->avg_gameBal[1]);
+    printf("Wins: %f/%d\tLosses: %f/%d\t\n", s->avg_wins[1], iter, s->avg_losses[1], iter);
+    printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)s->avg_wins[1]/iter*100, (float)s->avg_losses[1]/iter*100);
 
     printf("******Game C Stats******\n");
-    printf("Final Balance: $%d\n", s->gameBal[2]);
-    if(s->gameBal[2] < 0)
+    printf("Final Balance: $%f\n", s->avg_gameBal[2]);
+    if(s->avg_gameBal[2] < 0)
     {
         //On average, lost x amount per turn
-        printf("On average, lost $%f amount per turn\n", (-1)*(float)s->gameBal[2]/iter);
+        printf("On average, lost $%f amount per turn\n", (-1)*(float)s->avg_gameBal[2]/iter);
     }
-    else if(s->gameBal[2] >= 0)
+    else if(s->avg_gameBal[2] >= 0)
     {
         //On average, won x amount per turn
-        printf("On average, won $%f amount per turn\n", (float)s->gameBal[2]/iter);
+        printf("On average, won $%f amount per turn\n", (float)s->avg_gameBal[2]/iter);
     }
-    printf("Wins: %d/%d\tLosses: %d/%d\t\n", s->wins[2], iter, s->losses[2], iter);
-    printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)s->wins[2]/iter*100, (float)s->losses[2]/iter*100);
+    printf("Wins: %f/%d\tLosses: %f/%d\t\n", s->avg_wins[2], iter, s->avg_losses[2], iter);
+    printf("%% Wins: %0.2f%%\tLosses: %0.2f%%\t\n\n", (float)s->avg_wins[2]/iter*100, (float)s->avg_losses[2]/iter*100);
 }
 
 
@@ -187,12 +251,12 @@ int gameB(Stats *s)
         }
     }
 }
-  
+
 int gameC(Stats *s)
 {
     float random_number = (float)rand() / (float) RAND_MAX;
     (void)random_number;
-        
+
     if(random_number > 0.5)
     {
         random_number = (float)rand() / (float) RAND_MAX;
